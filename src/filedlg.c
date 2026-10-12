@@ -4,9 +4,16 @@
 /* New in the rebuilt library (the original had none).  It is made of the   */
 /* library's own parts: a window, buttons, the scroll bar, the text screen. */
 /*                                                                          */
+/*   int file_open_dialog(char *title, char *mask, char *filename);         */
+/*       to choose a file that is there: a name that is not is refused      */
+/*   int file_save_dialog(char *title, char *mask, char *filename);         */
+/*       to name a file to write: if there is such a file already, the      */
+/*       user is asked whether to replace it; a name typed without an       */
+/*       extension gets the one of the mask ("*.TXT" gives .TXT)            */
 /*   int file_dialog(char *title, char *mask, char *filename);              */
+/*       the plain one: any name is taken, nothing is asked                 */
 /*                                                                          */
-/*   title    : the title of the window, "Open File" for one                */
+/*   title    : the title of the window (NULL: "Open File", "Save File")    */
 /*   mask     : the files to list, "*.TXT" for one (NULL or "" : "*.*")     */
 /*   filename : where the chosen name is put, with its drive and path;      */
 /*              room for 128 characters                                     */
@@ -19,7 +26,7 @@
 /*                                   the mask, or take the file             */
 /*   TAB                             to the buttons                         */
 /*   ESC, Cancel                     give up                                */
-/* A name that is not in the list can be typed: a file to be made.          */
+/* A name that is not in the list can be typed (but not to open a file).    */
 /* The current drive and directory are the same after the dialog as before. */
 /*--------------------------------------------------------------------------*/
 #include <stdio.h>
@@ -40,6 +47,10 @@
 #define NAME_W      30
 #define MAX_FILES   400
 #define FNAME_MAX    64
+
+#define FD_ANY      0             /* the kinds of dialog                    */
+#define FD_OPEN     1
+#define FD_SAVE     2
 
 #define ID_OK       2001
 #define ID_CANCEL   2002
@@ -70,6 +81,7 @@ static int   wx, wy;              /* the window's corner                    */
 static char  name[FNAME_MAX + 1];  /* the name field                         */
 static char  mask[FNAME_MAX + 1];
 static int   sb_x1, sb_y1, sb_x2, sb_y2;
+static int   dlg_type;            /* FD_ANY, FD_OPEN or FD_SAVE             */
 
 int process_windows(void);
 
@@ -274,10 +286,87 @@ static void select_entry(int i)
   show_name();
 }
 /*--------------------------------------------------------------------------*/
+/* a line to the user, where the directory is shown                         */
+/*--------------------------------------------------------------------------*/
+static void message(const char *text)
+{
+  char line[DLG_W];
+  int  w = DLG_W - 4;
+
+  memset(line, ' ', w);
+  line[w] = 0;
+  memcpy(line, text, strlen(text));
+  txt_curs(7);
+  pls(wx + 2, wy + NAME_Y + 1, (unsigned char *) line, 0xF4);
+}
+
+static int file_exists(const char *path)
+{
+  char n[16];
+  int  is_dir;
+
+  return gp_findfirst(path, n, &is_dir) == 0 && !is_dir;
+}
+
+/* the file is there already: write over it ?  Y or N */
+static int ask_replace(void)
+{
+  int key;
+
+  printf("\a");
+  message("That file exists.  Replace it ?  (Y/N)");
+  for (;;)
+  {
+    key = getkey();
+    gcurs(MOVE);
+    if (key == 'y' || key == 'Y') return 1;
+    if (key == 'n' || key == 'N' || key == ESC || key == ENTER) break;
+  }
+  show_path();
+  show_name();
+  return 0;
+}
+
+/* to save: a name without an extension gets the one of the mask */
+static void add_extension(void)
+{
+  char *dot = strrchr(mask, '.');
+  char *last = strrchr(name, '\\');
+
+  if (last == NULL) last = name;
+  if (strchr(last, '.') != NULL) return;
+  if (dot == NULL || dot[1] == 0) return;
+  if (strchr(dot, '*') != NULL || strchr(dot, '?') != NULL) return;
+  if (strlen(name) + strlen(dot) > FNAME_MAX) return;
+  strcat(name, dot);
+}
+/*--------------------------------------------------------------------------*/
 /* Enter: what the name field says is done.                                 */
 /* returns 1 if it names a file (and filename is filled in)                 */
 /*--------------------------------------------------------------------------*/
+static int take_file(char *filename);
+
 static int activate(char *filename)
+{
+  if (take_file(filename) == 0) return 0;
+
+  if (dlg_type == FD_OPEN && !file_exists(filename))
+  {
+    printf("\a");
+    message("There is no such file.");
+    delay_func(1500);
+    show_path();
+    show_name();
+    return 0;
+  }
+  if (dlg_type == FD_SAVE && file_exists(filename))
+  {
+    if (ask_replace() == 0) return 0;
+  }
+  return 1;
+}
+
+static int take_file(char *filename)
 {
   char path[140];
   int  len;
@@ -314,6 +403,11 @@ static int activate(char *filename)
   }
 
   /* a file: its whole name */
+  if (dlg_type == FD_SAVE)
+  {
+    add_extension();
+    show_name();
+  }
   if (strchr(name, ':') != NULL || name[0] == '\\')
   {
     strcpy(filename, name);
@@ -334,7 +428,7 @@ static int activate(char *filename)
   return 1;
 }
 /*--------------------------------------------------------------------------*/
-int file_dialog(char *title, char *file_mask, char *filename)
+static int dialog(int type, char *title, char *file_mask, char *filename)
 {
   char start_dir[140];
   int  start_drive;
@@ -346,6 +440,9 @@ int file_dialog(char *title, char *file_mask, char *filename)
   int  gx, gy, gx2, gy2;
 
   if (font_width == 1) return NO;             /* (graphics modes only)      */
+
+  dlg_type = type;
+  if (title == NULL) title = (type == FD_SAVE) ? "Save File" : "Open File";
 
   files = (struct entry *) malloc(MAX_FILES * sizeof(struct entry));
   if (files == NULL) return NO;
@@ -391,7 +488,9 @@ int file_dialog(char *title, char *file_mask, char *filename)
   sb_x2 = sb_x1 + 19;
   sb_y2 = (wy + LIST_Y + LIST_ROWS) * font_height + 1;
 
-  b1 = draw_button("  ^OK  ", wx + 33, wy + 7,  78, 23, ID_OK,     ALTO);
+  if (type == FD_OPEN)      b1 = draw_button(" ^Open ", wx + 33, wy + 7, 78, 23, ID_OK, ALTO);
+  else if (type == FD_SAVE) b1 = draw_button(" ^Save ", wx + 33, wy + 7, 78, 23, ID_OK, ALTS);
+  else                      b1 = draw_button("  ^OK  ", wx + 33, wy + 7, 78, 23, ID_OK, ALTO);
   b2 = draw_button("Cancel",  wx + 33, wy + 10, 78, 23, ID_CANCEL, ESC);
 
   alt_control(INIT, 0);
@@ -512,5 +611,23 @@ int file_dialog(char *title, char *file_mask, char *filename)
   files = NULL;
 
   return result;
+}
+/*--------------------------------------------------------------------------*/
+/* any name is taken */
+int file_dialog(char *title, char *mask, char *filename)
+{
+  return dialog(FD_ANY, title, mask, filename);
+}
+
+/* a file that is there */
+int file_open_dialog(char *title, char *mask, char *filename)
+{
+  return dialog(FD_OPEN, title, mask, filename);
+}
+
+/* a file to write: asks before one is replaced */
+int file_save_dialog(char *title, char *mask, char *filename)
+{
+  return dialog(FD_SAVE, title, mask, filename);
 }
 /*--------------------------------------------------------------------------*/

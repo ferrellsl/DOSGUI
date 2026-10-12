@@ -60,8 +60,8 @@ extern unsigned _stklen=15000u;
 /*     demo 104      1024 x 768, 16 colors                                  */
 /*     demo 105      1024 x 768, 256 colors                                 */
 /* without it the mode is 12 (640 x 480, 16 colors) as before.              */
-/* And the File Dialog Box, which the original library had not: in the      */
-/* Functions menu, or F2.                                                   */
+/* And the File Dialog Boxes, which the original library had not: in the    */
+/* Functions menu, or F2 (open) and F3 (save).                              */
 /*--------------------------------------------------------------------------*/
 int main(int argc,char **argv)
 {
@@ -229,11 +229,20 @@ int main(int argc,char **argv)
        about();
        break;
 /*--------------------------------------------------------------------------*/
-      case 4300:   /* the File dialog box (new in the rebuilt library); F2 */
-       if(file_dialog("Open File","*.*",file_name)==YES)
+      case 4300:   /* the File Open dialog box (new in the rebuilt library); F2 */
+       if(file_open_dialog(NULL,"*.*",file_name)==YES)
        {
          frect(0,txt_scr_ysize-1,txt_scr_xsize-1,txt_scr_ysize-1,0x1F,0);
-         pls(0,txt_scr_ysize-1,"File : ",0x1E);
+         pls(0,txt_scr_ysize-1,"Open : ",0x1E);
+         pls(7,txt_scr_ysize-1,file_name,0x1F);
+       }
+       break;
+/*--------------------------------------------------------------------------*/
+      case 4310:   /* the File Save dialog box; F3 (nothing is written) */
+       if(file_save_dialog(NULL,"*.TXT",file_name)==YES)
+       {
+         frect(0,txt_scr_ysize-1,txt_scr_xsize-1,txt_scr_ysize-1,0x1F,0);
+         pls(0,txt_scr_ysize-1,"Save : ",0x1E);
          pls(7,txt_scr_ysize-1,file_name,0x1F);
        }
        break;

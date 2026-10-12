@@ -1,4 +1,4 @@
-1281
+1301
 $Topic,Contents
 
 
@@ -1197,13 +1197,33 @@ $Topic,File Dialog Box
 
 The File Dialog Box lets the user choose a file.  It is new in
 the rebuilt library; the original library did not have one.
+There are three of them :
 
 **************************************************
-*   Show a File Dialog Box and return a file     *
+*   Choose a file to open                        *
+**************************************************
+int file_open_dialog(char *title,char *mask,char *filename);
+
+    The file must be there : a name which is not is refused.
+
+**************************************************
+*   Name a file to save                          *
+**************************************************
+int file_save_dialog(char *title,char *mask,char *filename);
+
+    When there is such a file already, the user is asked
+    whether to replace it.  A name typed without an extension
+    receives the one of the mask ( "*.TXT" adds .TXT ).
+
+**************************************************
+*   The plain box : any name is accepted         *
 **************************************************
 int file_dialog(char *title,char *mask,char *filename);
 
-    title    : the title of the window
+For all three :
+
+    title    : the title of the window; with NULL the title
+               is "Open File" or "Save File"
     mask     : the files to be listed, as "*.TXT"
                ( "" or NULL lists all files )
     filename : receives the chosen name with its drive and
@@ -1217,26 +1237,26 @@ In the box :
     Arrows,PgUp,PgDn  : move through the list
     Home,End          : the first and the last entry
     Letters           : type a file name, or a mask as *.C
-    Enter or OK       : open the directory or the drive, apply
+    Enter or button   : open the directory or the drive, apply
                         the mask, or take the file
     Double click      : the same as Enter
     TAB               : select the buttons
     ESC or Cancel     : leave without a file
 
-A name which is not in the list may be typed, to name a new
-file.  The current drive and directory are restored when the
-box closes.
+The current drive and directory are restored when the box
+closes.
 
 Example :
 
     char name[128];
 
-    if(file_dialog("Open File","*.C",name)==YES)
+    if(file_open_dialog(NULL,"*.C",name)==YES)
     {
       pls(0,29,name,0x1F);
     }
 
-In the example program press F2, or use the Functions menu.
+In the example program press F2 to open and F3 to save, or
+use the Functions menu.
 
 Related topics :  ^Window Functions^   ^Button Functions^
                   ^Scroll Bar^

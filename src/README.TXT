@@ -30,15 +30,22 @@ What is new
   - 16-bit and 32-bit programs.  The same source builds a large model
     library for real mode and a 32-bit one for a DOS extender (DOS/4GW).
 
-  - A File Dialog Box, which the library never had:
+  - File Dialog Boxes, which the library never had:
 
+        int file_open_dialog(char *title, char *mask, char *filename);
+        int file_save_dialog(char *title, char *mask, char *filename);
         int file_dialog(char *title, char *mask, char *filename);
 
-    It lists the directories, the files of the mask and the drives, with a
-    scroll bar; a name or a mask can be typed; Enter, a double click or OK
-    opens a directory or takes the file.  It returns YES and the file's
-    whole name (room for 128 characters), or NO.  See the top of filedlg.c,
-    or "File Dialog Box" in the help of the example.
+    The box lists the directories, the files of the mask and the drives,
+    with a scroll bar; a name or a mask can be typed; Enter, a double click
+    or the button opens a directory or takes the file.  It returns YES and
+    the file's whole name (room for 128 characters), or NO.
+      open : the file must be there; a name that is not is refused.
+      save : if there is such a file, the user is asked whether to replace
+             it; a name typed without an extension gets the mask's.
+      the plain one : any name is taken and nothing is asked.
+    With NULL for the title it is "Open File" or "Save File".  See the top
+    of filedlg.c, or "File Dialog Box" in the help of the example.
 
   - GUI.H is the original interface.  DEMO.C from the folder above compiles
     against this library unchanged.
@@ -59,9 +66,10 @@ The example
     demo 104        1024 x 768, 16 colors   (any mode number of the table, in hex)
   It needs MENUFILE and HELPFILE in the current folder.  demo.c here is
   DEMO.C with the mode taken from the command line, the background painted
-  to the edges of the screen, and the File Dialog Box (in the Functions
-  menu, or F2).  MENUFILE and HELPFILE in this folder are the originals
-  with that menu entry and a help topic "File Dialog Box" added; the
+  to the edges of the screen, and the File Dialog Boxes (in the Functions
+  menu, or F2 to open and F3 to save).  MENUFILE and HELPFILE in this
+  folder are the originals with those menu entries and a help topic
+  "File Dialog Box" added; the
   build copies them beside the example.
 
 The files
@@ -86,7 +94,7 @@ The files
     perc_bar.c   show_percent_bar(), gpls2(), gwritechar2(), rgpls(),
                  rgwritechar()
     help.c       help(), delay_func()
-    filedlg.c    file_dialog() - new
+    filedlg.c    file_open_dialog(), file_save_dialog(), file_dialog() - new
     MENUFILE, HELPFILE   the example's menu and help, with the File Dialog Box
     demo.c       the example
     build.bat    builds it all
@@ -104,8 +112,10 @@ How it was checked
   build), and at 800 x 600 and 1024 x 768 in 256 colors (32-bit build); a
   drawing test was run at 800 x 600, 1024 x 768 and 1280 x 1024.  640 x 480
   in 256 colors and 1280 x 1024 in 256 colors were not tried.
-  The File Dialog Box was tried with the keyboard at 640 x 480 (16-bit
-  build): listing, going through the list, taking a file, its help topic.
+  The File Dialog Boxes were tried with the keyboard at 640 x 480 (16-bit
+  build): listing, going through the list, taking a file, typing a name,
+  the refusal of a file that is not there (open), the question before a
+  file is replaced and the added extension (save), the help topic.
   Its mouse side (clicks, double clicks, dragging the scroll bar), other
   drives and deep directories were not tried.
   Dragging a window, and everything else done with the mouse, was rebuilt

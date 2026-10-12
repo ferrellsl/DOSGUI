@@ -14,7 +14,7 @@ the original example program.
 
 | | |
 | --- | --- |
-| ![Menu](screenshots/menu.png)<br>The pull-down menu | ![File dialog](screenshots/file-dialog.png)<br>The file dialog (new) |
+| ![Menu](screenshots/menu.png)<br>The pull-down menu | ![File dialog](screenshots/file-dialog.png)<br>The Save dialog asking before it replaces a file (new) |
 | ![Help](screenshots/help.png)<br>The hypertext help window | ![Scroll bar](screenshots/scroll-bar.png)<br>The scroll bar |
 | ![About](screenshots/about.png)<br>A window with a button | ![1024x768](screenshots/1024x768.png)<br>The same program at 1024 x 768 |
 
@@ -26,7 +26,9 @@ the original example program.
   mode: 128 x 48 characters at 1024 x 768, for example.
 - **16-bit and 32-bit programs.** The same source builds a large-model
   real-mode library and a 32-bit DOS/4GW one with Open Watcom.
-- **A file dialog box**, `file_dialog()`, which the original never had.
+- **File dialog boxes**, which the original never had: `file_open_dialog()`
+  insists that the file exists, `file_save_dialog()` asks before a file is
+  replaced, and `file_dialog()` takes any name.
 - **The original interface.** `GUI.H` is unchanged apart from additions, and
   the original `DEMO.C` compiles against the rebuilt library as it is.
 

@@ -66,7 +66,8 @@ SUBMENU
 END
 "^Percent Display Function"               4280
 "^Scroll Bar Fucntion"                    4290
-"^File Dialog Box"                        4300 316
+"File ^Open Dialog Box"                   4300 316
+"File Sa^ve Dialog Box"                   4310 317
 LINE
 "E^xit"                                   27   301
 "%^Source Code"                           4500 287

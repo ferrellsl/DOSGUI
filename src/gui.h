@@ -130,6 +130,8 @@ void          disable_button(int );
 void          disable_button2(int ,int);
 int           check_button(int);
 int           file_dialog(char *title,char *mask,char *filename);
+int           file_open_dialog(char *title,char *mask,char *filename);
+int           file_save_dialog(char *title,char *mask,char *filename);
 void          deactivate_activebuttons(void);
 void          reactivate_activebuttons(void); // reactivate all previously active buttons
 
