@@ -1,0 +1,78 @@
+******************************************************************************
+MENU DESCRIPTOR FOR EXAM.C Program
+******************************************************************************
+. spaces in a begining of a line are ignored.
+. Any line that does not start with the following is considered a comment line
+        1. "
+        2. LINE
+        3. SUBMENU
+        4. END
+
+. first number written is the id number retured when that menu is selected
+. second number is the keyboard code for accelerating that menu entry.
+  When that key is pressed, the barmenu function returns the corresponding
+  id number without activating the menu.
+
+. The id number for a title does not do anything unless, the title does
+  not have any subtitles. This id number can be omitted.  If an accelerator
+  is to be placed for any title, the id number must be present although it
+  will not be of any significance.
+******************************************************************************
+
+
+
+
+"%F^unctions"                             4000 278
+"^Alternate menu colors"                  4005
+"^Drawing and Writting"                   
+SUBMENU
+    "Draw a  Line"                        4010
+    "Draw an Ellipse"                     4020
+    "Draw a  Rectangle"                   
+    SUBMENU                              
+       "Text     Mode Rectangle  "        4030
+       "Grahpics Mode Rectangle  "        4040
+    END
+    "Draw a  Filled Rectangle  "          
+    SUBMENU
+       "Text     Mode Filled Rectangle  " 4050
+       "Grahpics Mode Filled Rectangle  " 4060
+    END
+
+    "Write a string"                      
+    SUBMENU
+       "Text     Mode character  "        4070
+       "Text     Mode string     "        4080
+       "Graphics Mode character  "        4090
+       "Graphics Mode string     "        4100
+    END
+
+END
+"^Scroll Down Menu"                       4200
+"^Button Functions"                       
+SUBMENU
+    "Place  'TEST' Button"                4210
+    "Remove 'TEST' Button"                4220
+END
+"^Text Field Function"                    
+SUBMENU
+    "Place 1 Text Field"                  4230
+    "Place 5 Text Fields"                 4240
+END
+"B^inary Field Function"                  
+SUBMENU
+    "Place 1 Binary Field"                4250
+    "Place 5 Binary Fields"               4260
+END
+"^Percent Display Function"               4280
+"^Scroll Bar Fucntion"                    4290
+"^File Dialog Box"                        4300 316
+LINE
+"E^xit"                                   27   301
+"%^Source Code"                           4500 287
+
+"%^Help"                                  5000 291
+"^Help Contents"                          5010 315
+"H^elp on Help"                           5020
+LINE
+"^ABOUT"                                  5030

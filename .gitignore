@@ -1,0 +1,6 @@
+src/build16/
+src/build32/
+*.obj
+*.err
+_dbx.conf
+_OUT.TXT

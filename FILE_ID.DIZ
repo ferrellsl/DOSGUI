@@ -1,0 +1,11 @@
+DOS GUI Library for C.  Full Large model
+library is provided for BorlandC, MixC
+and MicrosoftC compilers.  Capabilities
+are : mouse support,Pull down menu,
+graphics functions, window functions,
+button functions, text and binary fields,
+scrollable menu, scroll bar function,
+percentage bar display function, and
+hyper text help facility. Full documentation
+is provided within the DEMO.EXE 'HELP'
+

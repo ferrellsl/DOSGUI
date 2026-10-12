@@ -1,0 +1,1211 @@
+1212
+$Topic,Contents
+
+
+
+                 ^Help on Help^
+                 ^Graphics Library's Capabilities^
+                 ^Text Mode Functions^
+                 ^Graphics Mode Functions^
+                 ^Mouse Functions^
+                 ^Entry Fields^
+                 ^Pull Down  Menu^
+                 ^Button Functions^
+                 ^Percent Bar Display^
+                 ^Scroll Bar^
+                 ^Window Functions^
+                 ^Miscellaneous Functions^
+                 ^How to Order Source Code^
+                      
+
+
+
+
+$Topic,Help On Help
+
+To activate HELP press the F1 Key or use the pull down
+menu.
+
+The Help Screen is organized as a large file separated by 
+different Help Topics.  The file may be examined by scrolling
+or by selecting related topics; related topics are displayed 
+in green. To select a related topic, simply click it with
+the mouse or press the TAB key several times until the topic
+is selected; then press Enter.
+
+Help Buttons :
+
+ ^Contents^  : displays the Contents Screen
+    Back     : returns to the previous screen up to 300 levels
+    Done     : Exit Help
+
+Help is activated by a single^Help Function^from the library.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$Topic,Help Function
+
+void help(char *title,char *helpfile,char *starting_topic)
+
+title          : is the displayed title on the help window.
+helpfile       : Hyper text help file.
+starting_topic : The topic to be shown on the startup screen.
+
+
+HELP FILE FORMAT :
+
+first line : the number of lines in the help file
+
+The rest of the file would be Help topics followed by help
+information.
+
+Note : Each help topic must be at least 21 lines apart.
+
+Anywhere in the help text another help topic may be displayed
+by enclosing the topic with\^ character.  The information will
+be displayed in green and if clicked on, help function will display 
+that topic.  To get back to the original topic, use the BACK button.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$Topic,Graphics Library's Capabilities
+
+
+The Plain Design GUI library is designed to function in the 
+graphics mode while allowing programming using Text mode and
+graphics mode functions.  You may easily convert a text mode
+program to graphics mode using this library.   
+
+When using a text mode function, the screen will be 80 characters 
+wide and 30 characters long.  In graphics mode it is 640 * 480
+pixels.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$Topic,Text Mode Functions
+
+   
+In text mode X coordinates are between 0-79  Y coordinates are 0-29
+color is in the form of  '0xbf'
+                         b=background : from 0 to F
+                         f=forground  : from 0 to F
+
+
+Functions :
+
+**************************************************
+*            Draw a filled rectangle             *        
+**************************************************
+void frect(int x1,int x2,int y1,int y2,int color); 
+
+
+**************************************************
+*                 Draw a rectangle               *        
+**************************************************
+void rect(int x1,int x2,int y1,int y2,int color); 
+
+
+**************************************************
+*          Draw a double line rectangle          *        
+**************************************************
+void dl_rect(int x1,int x2,int y1,int y2,int color); 
+
+
+**************************************************
+*          write a character at X,Y              *        
+**************************************************
+void          writechar (int x,int y,unsigned char c,int color);
+
+
+**************************************************
+*      write a character in window handle h      *        
+**************************************************
+void    writecharh(int x,int y,unsigned char c,int color,int h);
+
+
+**************************************************
+*      write a string starting at X,Y            *        
+**************************************************
+void          pls       (int x,int y,char *string,int color);
+
+
+**************************************************
+* write a string starting at X,Y of window h     *        
+**************************************************
+void    plsh      (int x,int y,char *string,int color,int h);
+
+
+**************************************************
+*      read a character from location X,Y        *        
+**************************************************
+unsigned char readchar  (int x,int y);
+
+
+**************************************************
+*      read color of the character at X,Y        *        
+**************************************************
+int           readcolor (int x,int y);
+
+
+**************************************************
+* read a string starting at X,Y and size length  *        
+**************************************************
+void          readstring(int x,int y,int size,char *string);
+
+
+**************************************************
+*  change color of the character block           *        
+**************************************************
+void     chcolor(int x,int y,int xsize,int ysize,int color);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$Topic,Graphics Mode Functions
+
+
+Graphics mode functions operate independently from the text mode
+screen memory.  When a text mode function is used to write a 
+character at location XY ,  that character may be read later by
+using the 'readchar' and 'readcolor' functions.  In graphics mode
+this is not possible.  
+In graphics mode XY coordinates are : 0<=X<=639   0<=Y<=479
+
+To convert graphic coordinates to text coordinates :
+
+        Xgraphics=Xtext*font_width    Ygraphics=Ytext*font_height
+
+Graphics Functions :
+                            
+                          ^Geometric Shapes^
+                          ^Writting Text^
+                          ^Saving / Restoring Pixel Blocks^
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$Topic,Geometric Shapes
+
+
+Note: the functions that start with 'c' do not turn the graphics
+      cursor off when drawing.  The equivalent function that does 
+      not start with the letter c does turn the cursor off.
+
+
+Geometric Functions :
+
+
+**************************************************
+*      read or draw a pixel int coordinates XY   *        
+**************************************************
+void          SETPIX(int x,int y,char color);
+int           GETPIX(int x,int y);
+int           RSETPIX(int,int,int);   /* XOR the color value */
+
+
+**************************************************
+*                Draw a Line                     *        
+**************************************************
+void          gr_line (int x1,int y1,int x2,int y2,int color);
+void          cgr_line(int x1,int y1,int x2,int y2,int color);
+
+
+**************************************************
+*  Draw a Line   XOR the color                   *        
+**************************************************
+void          xor_line (int x1,int y1,int x2,int y2,int color)
+
+
+**************************************************
+*          Draw a graphics rectangle             *        
+**************************************************
+void          grect (int x1,int y1,int x2,int y2,int color);
+void          cgrect(int x1,int y1,int x2,int y2,int color);
+
+
+*********************************************************
+* Draw a rectangle with Width 'w' pixels, xor the color * 
+*********************************************************
+void          xor_rect(int w,int x1,int y1,int x2,int y2,int color)
+
+
+**************************************************
+*     Draw a graphics filled rectangle           *        
+**************************************************
+void          gfillrect (int x1,int y1,int x2,int y2,int color);
+void          cgfillrect(int x1,int y1,int x2,int y2,int color);
+
+
+**************************************************
+*  Draw a graphics filled rectangle XOR color    *        
+**************************************************
+void          xor_frect (int x1,int y1,int x2,int y2,int color)
+
+
+**************************************************
+*     Draw an ellipse                            *        
+**************************************************
+void          ELLIPSE(int x,int y,int a,int b,int color);
+
+
+**************************************************
+* Draw an ellipse cut at x1cut,y1cut,x2cut,y2cut *    
+**************************************************
+int           PCELLIP(int x,int y,int a,int b,
+                      int x1cut,int y1cut,
+                      int x2cut,int y2cut,
+                      int color);
+
+**************************************************
+* Same as PCELLIP, but   XOR   the   color       *    
+**************************************************
+int           RCELLIP(int x,int y,int a,int b,
+                      int x1cut,int y1cut,
+                      int x2cut,int y2cut,
+                      int color);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                      
+                      
+                      
+                      
+                      
+                      
+$Topic,Writting Text
+
+
+Graphics text functions are similar to Text mode functions, 
+except that they do not alter the screen memory ( they cannot
+be read back ).  The XY coordinates are the graphics coordinates
+while the color value is the same as their TEXT mode equivalent; 
+
+
+void  gwritechar(int gx,int gy,unsigned char c      ,int color);
+void  gpls      (int gx,int gy,unsigned char *string,int color);
+void  cgpls     (int gx,int gy,unsigned char *string,int color);
+
+The following functions are the same as above except that the
+color value is between 0 and 15.  These functions do not display
+a background color for text.
+
+void  gwritechar2(int gx,int gy,unsigned char c      ,int color);
+void  gpls2      (int gx,int gy,unsigned char *string,int color);
+
+The following functions will XOR the color value
+
+void  rgwritechar(int gx,int gy,unsigned char c      ,int color);
+void  rgpls2     (int gx,int gy,unsigned char *string,int color);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$Topic,Saving / Restoring Pixel Blocks
+
+A block of pixels may be saved in memory and restored later. 
+This function is used extensively by the pull down menu
+function, to restore the background of the menus after it is
+deactivated.
+
+
+***************************************************************
+*  Save a block of pixels in memory                           *
+***************************************************************
+
+int    GET_IMAGE(int x,int y,int xsize,int ysize,char far *m);
+
+note : before calling this function, the memory used must be
+       allocated using farmalloc.  The size of the required
+       memory to be allocated is determined by get_block_size
+       function.
+
+***************************************************************
+*  return size of the block required for GET_IMAGE function   *
+***************************************************************
+long    get_block_size(int x1,int y1,int x2,int y2);
+
+
+***************************************************************
+*  Restore a block of pixels previously saved by GET_IMAGE    *
+***************************************************************
+void     RESTORE_IMAGE(char far *m,int x1,int y1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$Topic,Mouse Functions
+
+
+When initdisplay is called, the mouse is initialized.  The mouse
+routines in this library work by polling;  they are not interupt
+driven.  If in a loop area the mouse stops operating, add the 
+line gcurs(MOVE);  to the loop.  This function will take care of
+all mouse movements.
+
+
+
+*****************************************************************
+* read the location of the mouse : values are for graphics mode *
+* to convert to text divide by font_width and font_height vars  *
+*****************************************************************
+void get_ml(int *x,int *y);
+
+
+**********************************************************
+* returns YES or NO for the status of the mouse left key *
+**********************************************************
+int mouse_left_pressed(void);
+
+
+**********************************************************
+* this function sets variables ms and dc for the status  *
+* ms can be any values:PRESSED,RELEASED,PRESSEDRELEASED  *
+* dc can be any of above values, but it could also       *
+* become DOUBLECLICKED                                   *
+**********************************************************
+int mouse_state(void);
+
+**********************************************************
+*                  Show mosue cursor                     *
+**********************************************************
+void          show_mouse_cursor(void);
+
+
+**********************************************************
+*                  hide mosue cursor                     *
+**********************************************************
+void          hide_mouse_cursor(void);
+
+
+**********************************************************
+*  limit mouse movement                                  *
+**********************************************************
+void          limit_mouse(int x1,int y1,int x2,int y2);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$Topic,Entry Fields
+
+
+Entry fields may be a text field or a binary field.  To
+edit a field, a field structure must be created first 
+and passed to the field functions.
+
+
+******************************************************************
+*                       TEXT      FIELD                          *
+******************************************************************
+int text_field(struct xfield *,int action);
+
+       action : INIT       /* initialize and display */
+                -2         /* edit                   */
+
+struct xfield          
+{ 
+  int  type;               /* type of the field                 */
+                           /* can be F_TEXT,F_DATE,F_TIME,F_TEL */  
+  int  x;                  /* field's X coordinate              */
+  int  y;                  /* field's Y coordinate              */
+  int  length;             /* field length                      */
+  char title[20];          /* title of the field                */
+  char f[80];              /* field content                     */
+  int  fcolor;             /* field color                       */
+  int  tcolor;             /* title color                       */
+  int  xstart;             /* default x location for the cursor */
+};
+
+
+******************************************************************
+*                       BINARY    FIELD                          *
+******************************************************************
+int  binary_field(&bfield,action,int h);
+
+       action : INIT       /* initialize and display */
+                -2         /* edit                   */
+
+       h      : window handle or -1 for no window                     
+
+
+struct bfield
+{
+  int  x;                  /* x coordinate of the field         */
+  int  y;                  /* y coordinate of the field         */
+  char title[54];          /* title of the field                */
+  int  fcolor;             /* color of the field it selft       */
+  int  tcolor;             /* color of the title of the field   */
+  int  content;            /* set to yes or no                  */
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$Topic,Pull Down  Menu
+
+
+This library provides a very powerful pull down menu function.
+Pull Down Menus are implemented by a single function bar_menu.
+The pull down menu has a default behavior which may modified by
+calling the^Pull Down Menu Functions^.  For simplicity use the
+default parameters first.
+
+The bar_menu function acts as a getkey function until the pull
+down menu is invoked.
+
+To add a pull down menu to your program you must first creat a 
+menu descriptor file; a menu descriptor defines the pull down's
+titles and entries.  To place a menu title in the pull down menu
+you must add the following line:
+
+"%Pull Down Title" id acc
+
+        . Note that the title string starts with %
+        . id  is the value returned when the menu is activated
+        . acc is a key code for an accelerator key for the menu
+          for example if the title is for exit, you might want
+          ALTX to also activate exit without having to use the
+          menu, then acc should be the value for ALTX which is
+          301
+          
+To add entries under a title you must add lines as follows:
+"Entry 1" id1 acc1
+"Entry 2" id2 acc2
+ ....
+
+When a title has entries associated to it, its id value is
+ignored, but the acc value will turn on the pull down menu
+starting with that title.
+
+Entry ids are the values returned when a menu entry is activated.
+When bar_menu senses an accelerator, it will automatically return
+the id associated to that accelerator without invoking the pull 
+down menu.  
+
+Note : accelerators are optional and may be omitted.
+
+To add a line between two entries simply add the word LINE as
+follows :
+
+"Entry 1" id1 acc1
+LINE
+"Entry 2" id2 acc2
+
+To add a submenu under an entry do as follows :
+
+"Entry 1" id1 acc1
+SUBMENU
+  "SubEntry1" subid1 subacc1
+  "SubEntry2" subid2 subacc2
+END
+"Entry 2" id2 acc2
+
+
+There is no limit to how many levels of submenus you may add in
+the menu descriptor file.
+
+
+
+
+To add the pull down menu to a program do as follows :
+
+
+bar_menu(INIT);
+
+while(1)
+{
+  message=bar_menu(KEY_RETURN);
+
+
+}
+
+The bar_menu function by default looks for a descriptor file 
+"MENUFILE".  To change the menu file name use 
+
+  void          ch_menu_filename(char *newfilename);
+
+
+
+After you are satisfied with the Pull Down Menu you have created, 
+you can compile the menufile in your program by using the 
+CT_VAR.EXE program.  This program reads the menufile and creates
+a header file which can be included in your program.  To make
+the bar_menu function look at the header file instead of a text
+file add the following function before initializing the bar_menu
+function.
+
+set_menu_descriptor(VARIABLE,menu_var,num_of_lines);
+
+CT_VAR names the menu variables as menu_var and num_of_lines; you
+may change those variable names, but make sure to change the
+names in the above function call also.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$Topic,Pull Down Menu Functions
+
+------------------------------------------------------------------
+int bar_menu(int action);
+------------------------------------------------------------------
+
+The main entry to the drop down menu function.  When action=INIT, 
+the menu is initialized; when action=DISPLAY, the bar_menu will 
+display the menu titles on the screen; when action=KEY_RETURN, the 
+bar_menu function is in operational state.  It will return EOF if
+no operation had taken place.
+
+RETURNS :	Keyborard code, or menu definition number when 
+                selected EOF when there is no keyboard action.
+------------------------------------------------------------------
+NOTE :  the following functions change the attributes of the 
+        colors used for the menu.  All background function
+        which start with bg_ can use the following background 
+        color values :
+
+
+        BG_BLACK           0x00
+        BG_BLUE            0x10
+        BG_GREEN           0x20
+        BG_CYAN            0x30
+        BG_RED             0x40
+        BG_MAGENTA         0x50
+        BG_BROWN           0x60
+        BG_WHITE           0x70
+
+        All the forground function which start with fg_ can use 
+        the following forground color values :
+
+
+        FG_BLACK           0x00
+        FG_BLUE            0x01
+        FG_GREEN           0x02
+        FG_CYAN            0x03
+        FG_RED             0x04
+        FG_MAGENTA         0x05
+        FG_BROWN           0x06
+        FG_WHITE           0x07
+        FG_GRAY            0x08
+        FG_LIGHT_BLUE      0x09
+        FG_LIGHT_GREEN     0x0A
+        FG_LIGHT_CYAN      0x0B
+        FG_LIGHT_RED       0x0C
+        FG_LIGHT_MAGENTA   0x0D
+        FG_LIGHT_YELLOW    0x0E
+        FG_BRIGHT_WHITE    0x0F
+------------------------------------------------------------------
+void bg_menu_color(int color);
+------------------------------------------------------------------
+
+This function changes the background color of the menu rectangle 
+and text.
+
+RETURNS : NONE
+------------------------------------------------------------------
+void fg_menu_color(int color);
+------------------------------------------------------------------
+
+This function changes the forground color of the menu rectangle 
+and text.
+
+RETURNS : NONE
+------------------------------------------------------------------
+void bg_menu_hotkey_color(int color)
+------------------------------------------------------------------
+
+This function changes the background color of the menu hotkey 
+letter.
+
+RETURNS : NONE
+------------------------------------------------------------------
+void fg_menu_hotkey_color(int color)
+------------------------------------------------------------------
+
+This function changes the forground color of the menu hotkey 
+letter.
+
+RETURNS : NONE
+------------------------------------------------------------------
+void bg_menu_sel_color(int color)
+------------------------------------------------------------------
+
+This function changes the background color of the highlighted menu.
+
+RETURNS : NONE
+------------------------------------------------------------------
+void fg_menu_sel_color(int color)
+------------------------------------------------------------------
+
+This function changes the forground color of the highlighted menu.
+
+RETURNS : NONE
+------------------------------------------------------------------
+void bg_menu_shadow(int color)
+------------------------------------------------------------------
+
+This function changes the background color of shadow trailing the 
+menu rectangle.
+
+RETURNS : NONE
+------------------------------------------------------------------
+void fg_menu_shadow(int color)
+------------------------------------------------------------------
+
+This function changes the forground color of shadow trailing the 
+menu rectangle.
+
+RETURNS : NONE
+------------------------------------------------------------------
+void ch_menu_x(int x);
+------------------------------------------------------------------
+This function will change the x location of the menu bar.  This 
+function must be called before, the bar_menu is initialized.  
+
+RETURNS : NONE
+
+------------------------------------------------------------------
+void ch_menu_xsize(int xsize);
+------------------------------------------------------------------
+This function will change the size of the menu bar.  By default 
+the menu bar will be extended across the screen.  If a smaller 
+menu bar is desired, use this function.  This function must be 
+called before, the bar_menu is initialized.
+
+RETURNS : NONE
+
+------------------------------------------------------------------
+void ch_menu_y(int y);
+------------------------------------------------------------------
+This function will change the y location of the bar menu.  This 
+function must be called before, the bar_menu is initialized.  
+
+RETURNS : NONE
+
+------------------------------------------------------------------
+void set_menu_descriptor(int type,char **menu_variable,
+                         int num_of_lines );
+------------------------------------------------------------------
+This function will allow to select the menu descriptor type, 
+between TEXT_FILE and VARIABLE.  By default the type is set to 
+TEXT_FILE.  To compile the menu descriptor in the program, run 
+CT_VAR.EXE to convert the menu descriptor file to a header file. 
+run set_menu_descriptor :
+
+             type :  VARIABLE  or  TEXT_FILE
+    menu_variable :  pointer to the array of pointers describing 
+                     the menu descriptor.  
+     num_of_lines :  number of entries in the menu_variable.
+
+If this function is being used to sert the descriptor 
+
+RETURNS : NONE
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$Topic,Button Functions
+
+
+*******************************************************
+* Draw a button at location XY with size xsize, ysize *
+*******************************************************
+int   draw_button(char *bstring,int x ,int y ,int xsize,int ysize,
+                                int id,int acc);
+
+      bstring : string written inside of the button
+      x,y     : x,y location of the button in text coordinates
+                to use graphics coordinates 
+                x=1000+xg  where xg is in graphics coordinates
+                y=1000+yg
+
+      xsize   : size of the button in graphics coordinates
+      ysize
+
+      id      : value returned by check_button, when the button
+                is invoked.
+
+      acc     : accelerator key code, when key pressed, id is 
+                retured.
+
+Returns : button handle
+
+*******************************************************
+* Disable a button                                    *
+*******************************************************
+void  disable_button(int h);
+
+
+
+*******************************************************
+* Disable a button  and paint the background color    *
+*******************************************************
+void  disable_button2(int h,int color);
+
+
+
+***************************************************************
+* Check button activity, If nothing return ch else it returns *
+* the button id                                               *
+***************************************************************
+int   check_button(int ch);
+
+
+
+**********************************************
+* deactivate or reactivate displayed buttons *
+**********************************************
+void  deactivate_activebuttons(void);
+void  reactivate_activebuttons(void); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$Topic,Percent Bar Display
+
+Displays a bar showing the percentage of  Numerator / Denominator
+This function is useful is showing the progress of an action.
+
+
+int  show_percent_bar(
+                       int a,            // numerator
+                       int b,            // denomnator
+                       int x,            // bar x
+                       int y,            // bar y
+                       int xw,           // bar total width
+                       int yw,           // bar total height
+                       int border_color, // bar border color
+                       int bar_color,    // filled bar color
+                       int rev_num_color // color of the percent 
+                                            display
+                     )
+
+The first time this function is called, a must be 0.  At that
+time the function will initialize.
+
+
+When done, show_percent_bar must be called again with a=-1
+to release the memory it allocated.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$Topic,Scroll Bar
+
+
+The scroll bar function displays an adjustable bar.
+When adjusted, it changes a variable to show the level of
+adjustment that took place.  If the variable is changed
+outside of the scroll bar function, it will readjust to
+show the new level.
+
+
+int scr_bar(
+            int action,             // INIT or ACTION
+            int ch,                 // input character 
+            int maxnum,             // maximum number for num
+            int *num,               // current level 0<=num<=maxnum
+            int x1,int y1,int x2,int y2, // scroll bar coordinates
+            int border_color,            // scroll bar border color
+            int bar_color,               // bar color itself
+            int key_sw      // if ==-1 deactivate up,down 
+                            // arrow functionality internal to
+                            // the scroll bar function.
+                            // if 0 it will scroll the bar up and
+                            // down when the arrows are pressed.
+           );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$Topic,Window Functions
+
+  The window functions of this library work in text mode
+  coordinates.
+
+
+**********************************************
+* draw a window while saving the background  *
+**********************************************
+wh=messagebox( 
+               int x,int y,int xsize,int ysize, // coordinates
+               int color,                       // window color
+               int shadow,                      // window shadow
+               int border             // window border YES or NO
+             );
+
+
+Returns : the window handle
+
+
+**********************************************
+* Remove a window                            *
+**********************************************
+void   destroy_messagebox(int wh);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$Topic,Miscellaneous Functions
+
+
+******************************************************
+* delay in milli second                              *
+******************************************************
+void          delay_func(int milli);
+
+
+
+******************************************************
+*   Return the key pressed, EOF when no action       *
+******************************************************
+int           getkey(void);
+
+
+
+******************************************************
+* Returns YES when alt key is pressed                *
+******************************************************
+int           alt_pressed(void);
+
+
+******************************************************
+*   Set the video mode                               *
+******************************************************
+int           set_video_mode(int);
+
+
+******************************************************
+* Get the video mode                                 *
+******************************************************
+int           get_video_mode(void);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$Topic,How to Order Source Code
+
+
+Library Source Code for the GUI library is available for 
+$29.00 + $5.00 S/H in US International orders add $10.00 S/H
+
+
+Send Check or Money Order Only  to :
+
+
+                         Plain Design Inc.
+                         P.O. Box 135
+                         Midland Park, NJ 07432
+
+
+Please indicate the floppy size.
