@@ -21,7 +21,8 @@
 /*                                                                          */
 /* In the dialog:                                                           */
 /*   arrows, PgUp, PgDn, Home, End   move through the list                  */
-/*   letters                         type a name (or a mask like *.C)       */
+/*   letters                         type a name (or a mask like *.C); the  */
+/*                                   first one replaces the name shown      */
 /*   Enter, a double click, OK       go into the directory or drive, apply  */
 /*                                   the mask, or take the file             */
 /*   TAB                             to the buttons                         */
@@ -82,6 +83,8 @@ static char  name[FNAME_MAX + 1];  /* the name field                         */
 static char  mask[FNAME_MAX + 1];
 static int   sb_x1, sb_y1, sb_x2, sb_y2;
 static int   dlg_type;            /* FD_ANY, FD_OPEN or FD_SAVE             */
+static int   fresh;               /* the name was put there, not typed:     */
+                                  /* typing replaces it                     */
 
 int process_windows(void);
 
@@ -255,6 +258,7 @@ static void refresh(void)
   show_list();
   scr_bar(INIT, 0, scroll_max(), &top, sb_x1, sb_y1, sb_x2, sb_y2, 0, 7, -1);
   show_name();
+  fresh = 1;
 }
 
 /* the selection has moved: keep it in sight, and put its name in the field */
@@ -284,6 +288,7 @@ static void select_entry(int i)
 
   strcpy(name, files[sel].name);
   show_name();
+  fresh = 1;
 }
 /*--------------------------------------------------------------------------*/
 /* a line to the user, where the directory is shown                         */
@@ -521,6 +526,7 @@ static int dialog(int type, char *title, char *file_mask, char *filename)
       {
         strcpy(name, files[sel].name);
         show_name();
+        fresh = 1;
       }
     }
 
@@ -577,11 +583,14 @@ static int dialog(int type, char *title, char *file_mask, char *filename)
          name[i - 1] = 0;
          show_name();
        }
+       fresh = 0;
        break;
 
       default:
        if (key >= ' ' && key <= '~')
        {
+         if (fresh) name[0] = 0;
+         fresh = 0;
          i = (int) strlen(name);
          if (i < FNAME_MAX)
          {
